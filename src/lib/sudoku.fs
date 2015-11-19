@@ -25,3 +25,11 @@ let hints (r, s) (list : board) =
     seq [set list.[r] |> missin'                                   // Horizontal
          set (transpose list).[s] |> missin'                       // Vertikal
          set (region (r, s) list) |> missin'] |> Set.intersectMany // Region
+         
+exception SHIZZ'
+
+let rec insert (r, s) v list =
+    List.mapi (fun i x -> if i <> r then x else
+                          List.mapi (fun i x -> if i <> s then x else
+                                                if (hints (r, s) list).Contains v then v
+                                                else raise SHIZZ') x) list
