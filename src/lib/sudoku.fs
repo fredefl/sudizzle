@@ -29,5 +29,5 @@ let hints (r, s) (list : board) =
 let rec insert (r, s) v list =
     List.mapi (fun i x -> if i <> r then x else
                           List.mapi (fun i x -> if i <> s then x else
-                                                if (hints (r, s) list).Contains v then v
-                                                else failwith "Game over, bitch") x) list
+                                                if (hints (r, s) list).Contains v then v else
+                                                failwith "Game over, bitch") x) list
