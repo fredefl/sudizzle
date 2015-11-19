@@ -29,4 +29,4 @@ let hints (r, s) (list : board) =
 let rec insert (r, s) v list =
     if not ((hints (r, s) list).Contains v) then None else
     List.mapi (fun i x -> if i <> r then x else
-                              List.mapi (fun i x -> if i <> s then x else v) x) list |> Some
+                          List.mapi (fun i x -> if i <> s then x else v) x) list |> Some
