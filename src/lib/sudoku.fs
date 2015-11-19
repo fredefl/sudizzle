@@ -1,8 +1,5 @@
 module Sudoku
 
-
-type Sudoku = list<list<int>>
-
 (*
 	Print
 	Check (row, col) altså, koordinater
@@ -11,3 +8,20 @@ type Sudoku = list<list<int>>
 
 
  *)
+
+type row = list<int>
+type board = list<row>
+
+let rec transpose = function
+    | (_ :: _) :: _ as list -> List.map List.head list :: transpose (List.map List.tail list)
+    | _ -> []
+
+let region (r, s) (list : board) =
+    let r, s = (r / 3 * 3, s / 3 * 3)
+    List.collect (fun (x : row) -> x.[s .. s + 2]) list.[r .. r + 2]
+
+let hints (r, s) (list : board) =
+    let missin' = Set.difference (set [1 .. 9])
+    Set.intersectMany (seq [set list.[r] |> missin';              // Horizontal
+                            set (transpose list).[s] |> missin'   // Vertikal
+                            set (region (r, s) list) |> missin']) // Region
