@@ -27,7 +27,6 @@ let hints (r, s) (list : board) =
          set (region (r, s) list) |> missin'] |> Set.intersectMany // Region
 
 let rec insert (r, s) v list =
+    if not ((hints (r, s) list).Contains v) then None else
     List.mapi (fun i x -> if i <> r then x else
-                          List.mapi (fun i x -> if i <> s then x else
-                                                if (hints (r, s) list).Contains v then v else
-                                                failwith "Game over, bitch") x) list
+                              List.mapi (fun i x -> if i <> s then x else v) x) list |> Some
