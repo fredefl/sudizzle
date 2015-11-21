@@ -23,7 +23,7 @@ let region (r, s) (list : board) =
 let hints (r, s) (list : board) =
     let missin' = Set.difference (set [1 .. 9])
     seq [set list.[r] |> missin'                                   // Horizontal
-         set (transpose list).[s] |> missin'                       // Vertikal
+         set (transpose list).[s] |> missin'                       // Vertical
          set (region (r, s) list) |> missin'] |> Set.intersectMany // Region
 
 let rec insert (r, s) v list =
