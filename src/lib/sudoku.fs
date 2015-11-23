@@ -1,17 +1,8 @@
 module Sudoku
 
-(*
-	Print
-	Check (row, col) altså, koordinater
-		hjælpedreng til kvadrant
-	
-
-
- *)
-
+let span = [1 .. 9]
 type row = list<int>
 type board = list<row>
-let span = [1 .. 9]
 
 let rec transpose = function
     | (_ :: _) :: _ as list -> List.map List.head list :: transpose (List.map List.tail list)
