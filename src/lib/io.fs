@@ -1,9 +1,0 @@
-
-
-
-(*
-	load
-	save
-	parse
-	stringify
- *)

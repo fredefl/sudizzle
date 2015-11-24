@@ -47,7 +47,7 @@ let help() =
   """
 
 let newGame() =
-  loop(Sudoku.generate())
+  loop(Sudoku.)
 
 let loadGame() =
   printfn "%s" """
@@ -55,18 +55,18 @@ let loadGame() =
   """
 
   let rec interrogate() = 
-    printf "%s" "> " 
+    printf "%s" "> "
     let input = System.Console.ReadLine()
     match input with
     | "save" -> 
 
-
+  
   loop(sudoku)
 
 let mutable savedAs = ""
 
 let saveGame() =
-  
+  printfn "Dong" 
 
 let stripNonNumbers input =
   String.map (fun c -> if System.Char.IsNumber(c) then c else char(0)) input
