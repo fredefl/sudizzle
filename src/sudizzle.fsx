@@ -13,7 +13,7 @@ let main args =
     printf "%s" "> " 
     let input = System.Console.ReadLine()
     match input with
-      | "start"   -> help(); newGame()
+      //| "start"   -> help(); newGame()
       //| "indlæs"  -> help(); loadGame()
       | _ -> 
         printf "%s" "Forkert input, prøv igen!\n";
@@ -90,11 +90,12 @@ let rec loop sudoku =
     | _ ->
       let numbers = stripNonNumbers input
       if String.length numbers = 3 then
-        let r = 48 - int(numbers[0])
-        let s = 48 - int(numbers[1])
-        let v = 48 - int(numbers[2])
+        let r = 48 - int(numbers.[0])
+        let s = 48 - int(numbers.[1])
+        let v = 48 - int(numbers.[2])
 
         loop (Sudoku.insert (r,s) v sudoku)
+        ()
       else
-        interrogate()
-
+        interrogate ()
+  interrogate() 
