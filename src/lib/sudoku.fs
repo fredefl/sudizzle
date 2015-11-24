@@ -32,10 +32,10 @@ let print list =
                            printfn "\n   +---+---+---+---+---+---+---+---+---+") (span :: list)
 
 let parse input =
-    List.map (fun x -> Seq.fold (fun y -> if y = '*' then 0 else System.Convert.ToInt32 y) "" x) input
+    List.map (fun x -> Seq.foldBack (fun y acc -> (if y = '*' then 0 else (System.Convert.ToInt32 y) - 48) :: acc) x []) input
 
 let stringify list =
-    List.map (fun x -> List.fold (fun y -> if y = 0 then "*" else y.ToString ()) "" x) list
+    List.map (fun x -> List.fold (fun acc y -> acc + if y = 0 then "*" else y.ToString ()) "" x) list
 
 let load file =
     parse (System.IO.ReadAllLines file)
