@@ -1,4 +1,3 @@
-
 module Sudoku
 
 let span = [1 .. 9]
@@ -20,7 +19,8 @@ let hints (r, s) (list : board) =
          set (transpose list).[s] |> missin'                       // Vertical
          set (region (r, s) list) |> missin'] |> Set.intersectMany // Region
 
-let isFinished = List.forall (fun (x : row) -> (missin' (set x)).Count = 0)
+let isFinished (list : board) = 
+    List.forall (fun (x : row) -> (missin' (set x)).Count = 0) list
 
 let insert (r, s) v list =
     if not ((hints (r, s) list).Contains v) then None else

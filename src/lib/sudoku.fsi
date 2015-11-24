@@ -10,7 +10,11 @@ val hints : (int * int) -> board -> Set<int>
 val isFinished : board -> bool
 
 /// Indsætter et element. 
-val insert : (int * int) -> int -> board -> board
+val insert : (int * int) -> int -> board -> board option
 
 /// Printer Soduko plade.
 val print : board -> unit
+
+val load : string -> board
+
+val save : string -> board -> unit

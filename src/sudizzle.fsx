@@ -1,29 +1,3 @@
-(* Main entry point for application *)
-[<EntryPoint>]
-let main args =
-  printfn "%s" """
-  Velkommen til SuDizzle, du har nu følgende valgmuligheder:
-
-  - 'start'   for at starte et nyt spil
-  - 'indlæs'  for at indlæse et tidligere spil
-  """
-
-  // Keeps asking the user for input with recursion
-  let rec interrogate() = 
-    printf "%s" "> " 
-    let input = System.Console.ReadLine()
-    match input with
-      //| "start"   -> help(); newGame()
-      //| "indlæs"  -> help(); loadGame()
-      | _ -> 
-        printf "%s" "Forkert input, prøv igen!\n";
-        interrogate()
-
-  interrogate()
-
-  // Return 0 to indicate success
-  0
-
 let help() =
   printfn "%s" """
   Spillet understøtter følgende kommandoer:
@@ -46,8 +20,39 @@ let help() =
   God spillelyst!
   """
 
+let stripNonNumbers input =
+  String.map (fun c -> if System.Char.IsNumber(c) then c else char(0)) input
+
+let rec loop sudoku =
+  // Print the sudoku to screen
+  Sudoku.print sudoku
+
+  // Keep asking the user for input with recursion
+  let rec interrogate() =
+    printf "> "
+    let input = System.Console.ReadLine()
+    match input with
+    //| "save" -> saveGame()
+    | "help" -> help()
+    | _ ->
+      let numbers = stripNonNumbers input
+      if String.length numbers = 3 then
+        let r = 48 - int(numbers.[0])
+        let s = 48 - int(numbers.[1])
+        let v = 48 - int(numbers.[2])
+
+        match Sudoku.insert (r,s) v sudoku with
+        | Some x -> loop (x)
+        | None -> 
+          printfn "Forkert indtastning"
+          interrogate()
+        ()
+      else
+        interrogate ()
+  interrogate() 
+
 let newGame() =
-  loop(Sudoku.load "../templates/01.txt")
+  loop(Sudoku.load "./templates/01.txt")
 
 (*
 let loadGame() =
@@ -72,30 +77,28 @@ let saveGame() =
   printfn "Dong" 
 
 *)
+(* Main entry point for application *)
+[<EntryPoint>]
+let main args =
+  printfn "%s" """
+  Velkommen til SuDizzle, du har nu følgende valgmuligheder:
 
-let stripNonNumbers input =
-  String.map (fun c -> if System.Char.IsNumber(c) then c else char(0)) input
+  - 'start'   for at starte et nyt spil
+  - 'indlæs'  for at indlæse et tidligere spil
+  """
 
-let rec loop sudoku =
-  // Print the sudoku to screen
-  Sudoku.print sudoku
-
-  // Keep asking the user for input with recursion
-  let rec interrogate() =
-    printf "%s" "> "
+  // Keeps asking the user for input with recursion
+  let rec interrogate() = 
+    printf "> " 
     let input = System.Console.ReadLine()
     match input with
-    //| "save" -> saveGame()
-    | "help" -> help()
-    | _ ->
-      let numbers = stripNonNumbers input
-      if String.length numbers = 3 then
-        let r = 48 - int(numbers.[0])
-        let s = 48 - int(numbers.[1])
-        let v = 48 - int(numbers.[2])
+      | "start"   -> help(); newGame()
+      //| "indlæs"  -> help(); loadGame()
+      | _ -> 
+        printf "%s" "Forkert input, prøv igen!\n";
+        interrogate()
 
-        loop (Sudoku.insert (r,s) v sudoku)
-        ()
-      else
-        interrogate ()
-  interrogate() 
+  interrogate()
+
+  // Return 0 to indicate success
+  0
