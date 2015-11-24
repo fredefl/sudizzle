@@ -28,7 +28,7 @@ let mutable savedAs = ""
 
 let saveGame sudoku =
   printfn "%s" """
-  Indtast venligst navnet på det gemte spil
+  Indtast det filnavn du vil gemme som.
   """
   
   printf "[%s]> " savedAs
@@ -43,6 +43,23 @@ let saveGame sudoku =
 
   printfn "Spillet blev gemt!"
 
+let displayHint sudoku =
+  printfn "%s" """
+  Indtast feltet du vil have et hint for: r,s
+  """
+  
+  printf "hint > "
+
+  let input = System.Console.ReadLine() 
+
+  let numbers = stripNonNumbers input
+  if String.length numbers = 2 then
+    let r = int(numbers.[0]) - 49
+    let s = int(numbers.[1]) - 49
+
+    printfn "%A" (Sudoku.hints (r, s) sudoku)
+  else
+    printfn "Forkert indtasting af hint!"
 
 let rec loop sudoku =
   // Print the sudoku to screen
@@ -55,6 +72,7 @@ let rec loop sudoku =
     match input with
     | "save" -> saveGame sudoku; interrogate ();
     | "help" -> help(); interrogate ();
+    | "hint" -> displayHint sudoku; interrogate ();
     | _ ->
       let numbers = stripNonNumbers input
       if String.length numbers = 3 then
