@@ -4,6 +4,7 @@ let help() =
 
   help  - bringer denne hjælp frem
   save  - gemmer spillet
+  hint  - giver et hint til et felt
 
   Desuden spilles der ved fx. at skrive:
 
