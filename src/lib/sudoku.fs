@@ -24,6 +24,12 @@ let rec insert (r, s) v list =
                           List.mapi (fun i x -> if i <> s then x else v) x) list |> Some
 
 let print list =
+    let case0 x value = if x = 0 then " " else value
+    List.iteri (fun i x -> List.iter (fun x -> printf " %s %s" (case0 x (x.ToString ())) (case0 i "|")) (i :: x)
+                           printfn "\n   +---+---+---+---+---+---+---+---+---+") (span :: list)
+
+(*
+let print list =
     let rec line i format = function
         | head :: tail ->
             List.iter (fun x -> printf format (if x = 0 then " " else x.ToString ())) (i :: head)
@@ -31,3 +37,4 @@ let print list =
             line (i + 1) " %s |" tail
         | _ -> ()
     line 0 " %s  " (span :: list)
+*)
