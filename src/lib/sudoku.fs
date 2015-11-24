@@ -19,8 +19,7 @@ let hints (r, s) (list : board) =
          set (transpose list).[s] |> missin'                       // Vertical
          set (region (r, s) list) |> missin'] |> Set.intersectMany // Region
 
-let isFinished list =
-    List.forall (fun x -> (missin' x).Length = 0) list
+let isFinished = List.forall (fun (x : row) -> (missin' (set x)).Count = 0)
 
 let insert (r, s) v list =
     if not ((hints (r, s) list).Contains v) then None else
@@ -31,14 +30,3 @@ let print list =
     let case0 x value = if x = 0 then " " else value
     List.iteri (fun i x -> List.iter (fun x -> printf " %s %s" (case0 x (x.ToString ())) (case0 i "|")) (i :: x)
                            printfn "\n   +---+---+---+---+---+---+---+---+---+") (span :: list)
-
-(*
-let print list =
-    let rec line i format = function
-        | head :: tail ->
-            List.iter (fun x -> printf format (if x = 0 then " " else x.ToString ())) (i :: head)
-            printfn "\n   +---+---+---+---+---+---+---+---+---+"
-            line (i + 1) " %s |" tail
-        | _ -> ()
-    line 0 " %s  " (span :: list)
-*)
