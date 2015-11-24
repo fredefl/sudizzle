@@ -1,3 +1,4 @@
+
 module Sudoku
 
 let span = [1 .. 9]
@@ -37,8 +38,6 @@ let parse input =
 let stringify list =
     List.map (fun x -> List.fold (fun acc y -> acc + if y = 0 then "*" else y.ToString ()) "" x) list
 
-let load file =
-    parse (System.IO.ReadAllLines file)
+let load file = System.IO.File.ReadAllLines file |> List.ofArray |> parse
 
-let save file list = 
-    System.IO.WriteAllLines (file, stringify list)
+let save file list = System.IO.File.WriteAllLines (file, stringify list)
