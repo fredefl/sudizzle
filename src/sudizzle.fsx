@@ -23,6 +23,27 @@ let help() =
 let stripNonNumbers input =
   String.map (fun c -> if System.Char.IsNumber(c) then c else char(0)) input
 
+
+let mutable savedAs = ""
+
+let saveGame sudoku =
+  printfn "%s" """
+  Indtast venligst navnet på det gemte spil
+  """
+  
+  printf "[%s]> " savedAs
+  
+  let input = System.Console.ReadLine() 
+
+  if savedAs <> "" && input = "" then
+    Sudoku.save savedAs sudoku
+  else
+    Sudoku.save input sudoku
+    savedAs <- input
+
+  printfn "Spillet blev gemt!"
+
+
 let rec loop sudoku =
   // Print the sudoku to screen
   Sudoku.print sudoku
@@ -32,14 +53,16 @@ let rec loop sudoku =
     printf "> "
     let input = System.Console.ReadLine()
     match input with
-    //| "save" -> saveGame()
-    | "help" -> help()
+    | "save" -> saveGame sudoku; interrogate ();
+    | "help" -> help(); interrogate ();
     | _ ->
       let numbers = stripNonNumbers input
       if String.length numbers = 3 then
-        let r = 48 - int(numbers.[0])
-        let s = 48 - int(numbers.[1])
-        let v = 48 - int(numbers.[2])
+        let r = int(numbers.[0]) - 49
+        let s = int(numbers.[1]) - 49
+        let v = int(numbers.[2]) - 48
+
+        printfn "Indtasting r:%d s:%d v:%d" r s v
 
         match Sudoku.insert (r,s) v sudoku with
         | Some x -> loop (x)
@@ -48,35 +71,28 @@ let rec loop sudoku =
           interrogate()
         ()
       else
+        printfn "Forkert indtastning"
         interrogate ()
   interrogate() 
 
 let newGame() =
   loop(Sudoku.load "./templates/01.txt")
 
-(*
+
 let loadGame() =
   printfn "%s" """
   Indtast venligst navnet på det gemte spil
   """
 
-  let rec interrogate() = 
-    printf "%s" "> "
-    let input = System.Console.ReadLine()
-    match input with
-    | "save" -> 
+  printf "> "
+  let input = System.Console.ReadLine() 
 
-  
-  loop(sudoku)
-*)
+  help()
 
-(*
-let mutable savedAs = ""
+  input |> Sudoku.load |> loop
+  ()
 
-let saveGame() =
-  printfn "Dong" 
 
-*)
 (* Main entry point for application *)
 [<EntryPoint>]
 let main args =
@@ -93,7 +109,7 @@ let main args =
     let input = System.Console.ReadLine()
     match input with
       | "start"   -> help(); newGame()
-      //| "indlæs"  -> help(); loadGame()
+      | "indlæs"  -> loadGame()
       | _ -> 
         printf "%s" "Forkert input, prøv igen!\n";
         interrogate()

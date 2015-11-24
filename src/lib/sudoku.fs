@@ -40,4 +40,4 @@ let stringify list =
 
 let load file = System.IO.File.ReadAllLines file |> List.ofArray |> parse
 
-let save file list = System.IO.File.WriteAllLines (file, stringify list)
+let save file list = System.IO.File.WriteAllLines (file, stringify list)    
