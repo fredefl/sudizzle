@@ -14,7 +14,7 @@ let main args =
     let input = System.Console.ReadLine()
     match input with
       | "start"   -> help(); newGame()
-      | "indlæs"  -> help(); loadGame()
+      //| "indlæs"  -> help(); loadGame()
       | _ -> 
         printf "%s" "Forkert input, prøv igen!\n";
         interrogate()
@@ -47,8 +47,9 @@ let help() =
   """
 
 let newGame() =
-  loop(Sudoku.)
+  loop(Sudoku.load "../templates/01.txt")
 
+(*
 let loadGame() =
   printfn "%s" """
   Indtast venligst navnet på det gemte spil
@@ -62,11 +63,15 @@ let loadGame() =
 
   
   loop(sudoku)
+*)
 
+(*
 let mutable savedAs = ""
 
 let saveGame() =
   printfn "Dong" 
+
+*)
 
 let stripNonNumbers input =
   String.map (fun c -> if System.Char.IsNumber(c) then c else char(0)) input
@@ -80,7 +85,7 @@ let rec loop sudoku =
     printf "%s" "> "
     let input = System.Console.ReadLine()
     match input with
-    | "save" -> saveGame()
+    //| "save" -> saveGame()
     | "help" -> help()
     | _ ->
       let numbers = stripNonNumbers input
@@ -89,7 +94,7 @@ let rec loop sudoku =
         let s = 48 - int(numbers[1])
         let v = 48 - int(numbers[2])
 
-        loop (Sudoku.update sudoku (r,s,v))
+        loop (Sudoku.insert (r,s) v sudoku)
       else
         interrogate()
 

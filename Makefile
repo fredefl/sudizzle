@@ -7,7 +7,7 @@ CC=fsharpc
 SRC=./src
 LIB=$(SRC)/lib
 
-FILES=$(SRC)/sudizzle.fsx $(LIB)/Sudoku.fs $(LIB)/sudoku.fs $(LIB)/sudoku.fsi $(LIB)/io.fs $(LIB)/io.fsi
+FILES=$(SRC)/sudizzle.fsx $(LIB)/Sudoku.fs $(LIB)/sudoku.fs $(LIB)/sudoku.fsi
 
 build:
 	${CC} -o $(OUT) ${FILES}
