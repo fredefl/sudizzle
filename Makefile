@@ -14,6 +14,9 @@ build:
 	${CC} -a -o $(OUTDLL) $(LIB)/sudoku.fsi $(LIB)/sudoku.fs
 	${CC} -o $(OUTEXE) $(SRC)/sudizzle.fsx -r $(OUTDLL)
 
-run:
+dev:
 	make build
+	make run
+
+run:
 	mono $(OUTEXE)
