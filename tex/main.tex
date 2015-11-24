@@ -1,0 +1,168 @@
+
+\documentclass[a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for making LaTeX properly handle utf8 characters set and danish language rules
+\usepackage[utf8]{inputenc}
+\usepackage[danish]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for changing to a nicer font 
+\usepackage[T1]{fontenc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for conctroling the text area
+\usepackage[margin=2.5cm]{geometry}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for inserting clickable hyperlinks in pdf versions as produced by pdflatex
+\usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for including figures. TeX and thus LaTeX was developped before the existence of directory file-structures, but the graphicspath let's you add directories, that the \includegraphics will search.
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Package for typesetting programs. Listings does not support fsharp, but a little modification goes a long way
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{turqusnumbers}{rgb}{0.17,0.57,0.69}
+\definecolor{redstrings}{rgb}{0.5,0,0}
+
+\lstdefinelanguage{FSharp}
+                {morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, and, for, in, do, begin, end, fun, function, try, mutable, if, then, else},
+    keywordstyle=\color{bluekeywords},
+    sensitive=false,
+    morecomment=[l][\color{greencomments}]{///},
+    morecomment=[l][\color{greencomments}]{//},
+    morecomment=[s][\color{greencomments}]{{(*}{*)}},
+    morestring=[b]",
+    stringstyle=\color{redstrings}
+}
+
+\makeatother
+
+\title{Suziddle}
+\author{Emil Unn Weihe & Frederik Fredslund Lassen}
+
+\begin{document}
+	\maketitle
+
+	\section*{Forord}
+	Opgaven er udarbejdet af Emil Unn Weihe og Frederik Fredslund Lassen i november 2015. \textbf{Der gøres opmærksom på, at koden kun kan køres med F\# 4.0 eller nyere.}
+	
+	\section*{Introduktion}
+	% Denne opgave handler om at bygge en sudoku
+	% blah balh
+	I denne rapport er der konstrueret en Sudoku i $F#$, som det er beskrevet i opgaveformuleringen. Denne Sudoku er er af 9 rækker og 9 kolonner med 9 regioner. Det er desuden reglen i Sudoku-spillet at ingen tal må gå igen på samme række, kolonne og region.
+	
+	\tableofcontents
+	
+    \pagebreak
+	
+	\section{Problemformulering}
+	\textbf{Kravene jævnfør opgavebeskrivelsen:}
+	
+    \begin{enumerate}
+        \item Brugeren skal kunne indtaste filnavnet for (start-)tilstanden
+        \item Brugeren skal kunne indtaste triplen (r, s, v), og hvis feltet er tomt og indtastningen overholder spillets regler, skal matrixen opdateres, og ellers skal der udskrives en fejlmeddelelse på̊ skærmen.
+        \item Programmet skal kunne skrive matricens tilstand på skærmen (på en overskuelig måde).
+        \item Programmet skal kunne foreslå̊ lovlige tripler (r, s, v).
+        \item Programmet skal kunne afgøre, om spillet er slut.
+        \item Brugeren skal have mulighed for at afslutte spillet og gemme tilstanden i en fil.
+        \item Programmet skal kommenteres ved brug af fsharp kommentarstandarden
+        \item Programmet skal struktureres ved brug af et eller flere moduler, som I selv har skrevet
+        \item Programmet skal unit-testes
+    \end{enumerate}
+
+	
+	\section{Problemanalyse og design}
+	% Her forklares det hvordan opgaven er designet
+	% Hvilke tanker der har været med det
+	% fx. hint funktionen bruges til check osv.
+	% keyword: redundans, kort, overskuelig kode
+	% opbygning med modul og hoved-fil
+	Brugerfladen til programmet skal bygges på en måde så brugeren, i starten af programmet, kan vælge to veje at gå ned af. Den første vej består af at kunne starte et helt nyt spil. Dette skal dog gøres fra en kendt løselig sudoku. Dette vil blive løst med prædefinerede, hardcodede template(s) som ligger sammen med programmet. Den anden vej bestårt af at kunne indlæse en tidligere spil-tilstand. Dette gøres ved samme funktionalitet som første vej, bortset fra at brugeren har mulighed for at specificere hvilken fil der skal indlæses fra. Disse to ting udgør punkt 1 i opgavebeskrivelsen.
+	\\\\
+	I modulet bliver der lagt stor vægt på kodegenbrug, effektivitet og kort, forståelig kode. Dette giver sig for eksempel til kende ved at det er muligt at bruge $hint$ funktionen, som skal bruges til at foreslå lovlige tripler (jævnfør, og derfor udgørende, punkt 4 i opgavebeskriven) til at indentificere om en given indtastning er lovlig, og derfor kan krav 2 løses let og elegant. Dette implementeres desuden ved at kostruere en eksisterende matrice ud fra den eksisterende matrice og returnere den, således at den kan blive brugt atter igen.
+	\\\\
+	Matricens tilstand skal skrives til skærmen på en simpel, let og overskuelig måde med mindst mulig kode, selvom den selvfølgelig stadig møder krav 3.
+	\\\\
+	Ved hurtigt at tjekke om matricen indeholder tomme felter, kan det afgøres om spillet er slut, jævnfør krav 5. 
+	\\\\
+	Spillet skal gemmes til en fil, som også skal kunne læses af programmet igen. Dette skal gøres ved at implementere standarden som specificeret i opgavebeskrivelsen: denne beskriver, at rækker skal opbevares på linjer for sig, hvor hele rækken står tegn for tegn, således at rækken er 9 tegn lang og der er 9 linjer med rækker. Programmet er derfor kompatibelt med filen fra opgavebeskrivelsen, og som en bonus er programmet kompatibelt med de andre studerendes implementationer af sudoku'en. Krav nummer 6 mødes derfor her. Programmet kan desuden afsluttes på almindelig vis ved at bruge $ctrl + c$. 
+	\\\\
+	I $interface$-filen skal der skrives kommentarer jævnfør $F#$-kommentarstandarden med $summary$ som kort beskriver funktionen, $param$'s som beskriver de enkelte parametre funktionen tager samt $returns$ som forklarer hvad funktionen returnerer. Dette udgør krav 7, og der bliver desuden genereret en samlet $XML$-fil ud fra al' dokumentationen i $interface$-filen.
+	\\\\
+	Til denne $interface$-fil følger også et modul, som har alle de underliggende funktioner som har med sudoku'en at gøre. Brugergrænseflade-delen og sudokuen er derfor abstraheret væk fra hinanden således, at det eneste brugergrænsefladen skal tage sig af er at oversætte mellem brugeren og det underliggende modul. Dette møder krav 8.
+	\\\\
+	Der skal i programmet desuden overvejes unit-tests, og disse skal implementeres så de dækker modulet, således at sudoku-spillet er dækket for eventuelle fejl der måtte opstå under uheldige modifikationer, og således, at en given kode-ændring i modulet kan testes således at det ikke ødelægger kerne-funktionaliteten i modulet. Dette udgør krav 9.
+	\\\\
+	Programmet skal desuden komme med en eksekverbar fil eller et script, der kan bruges til at køre tests, generere dokumentation, bygge eksekverbare filer samt køre spillet nemt og enkelt. Det traditionelle $GNU Makefile$ format er valgt til dette, fordi det tillader netop dette, og er standarden til denne slags opgaver.
+	\\\\
+	Som det kan ses, er spillet derfor designet til at møde en analyse af kravene i problemformuleringen, og opfylder derfor kravene i samme.
+	
+	\section{Programbeskrivelse}
+	% Konkret beskrivelse af funktioner
+	% også gameloop
+	
+	I vores $module$ Sudoku findes funktioner:
+	\\\\
+	$hints$ - en funktion som ud fra et koordinat på brættet, finder de værdier som kan indsættes i feltet. Først findes lister af værdierne for hhv. rækken, søjlen og regionen. Disse omdannes til $set$, hvorefter værdier fra 1 - 9 som ikke findes i disse $set$, returneres via hjælpefunktionen $missin'$. De tre lister smides ind i en $sequence$, og sendes videre til $Set.intersectMany$, som finder de fælles værdier for listerne.
+	\\\\
+    $isFinished$ - atter en funktion som anvender $missin'$, til at tjekke at alle rækkerne indeholder tal fra 1 - 9, og at brættet derfor er udfyldt / spillet er ovre.
+	\\\\
+	$insert$ - en funktion som ta'r et koordinat på brættet, og indsætter en værdi i feltet (altså, i tilfælde af at det er en korrekt værdi). Først anvendes $hints$ til at finde de værdier som kan indsættes i feltet, hvorefter der tjekkes om den givne værdi er en af dem. Hvis dette ikke er tilfældet returneres $None$. Derimod, hvis det er tilfældet, $mappes$ bræt-listen og værdien indsættes.
+	\\\\
+	$print$ - en funktion som ta'r brættet og printer det på en simpel vis. Der køres over alle felter i bræt-listen, hvorved deres værdier printes.
+	\\\\
+	$load$ - en funktion som anvender $System.IO.File.ReadAllLines$ til at $load$'e linjerne i en fil og konstuere en $board$-type ud fra samme. Funktionen $parse$ er hjælpefunktion til denne, og $parse$ tager linjerne og $map$'er dem ud over en funktion der kører $Seq.foldBack$ på hver linje og derved kører hver linje igennem $char$ efter $char$. Der afgøres her hvilken $int$ værdi $char$'en har, og det hele akkumuleres op i en liste af $int$'s og $mappes$ tilbage til en liste af lister med heltal, som er $board$-typen.
+	\\\\
+	$save$ - en funktion som gemmer en $board$-type ned i en fil ved hjælp af $System.IO.File.WriteAllLines$. Denne funktion gør essentielt set det modsatte af $load$-funktionen, hvor de har hjælpefunktionen $stringify$ som $mapper$ hver row til en linje i tekstdokumentet og på hver af disse linjer bliver en række fra sudokuen konverteres fra $int$ til $char$ med en $List.fold$ hvor en akkumulator af typen streng bliver kørt med rundt og der bliver sammesat strenge, således at den ligner den repræsentation som der er beskrevet i opgavebeskrivelsen.
+	
+	\section{Afprøvning}
+	Der er konstrueret unit-tests dækkende:
+	\begin{itemize}
+	    \item At gemme et sudoku spil.
+	    \item At indlæse et gemt sudoku spil.
+	    \item At bedømme om et spil er færdigt.
+	    \item At give hints til et felt.
+	    \item At indsætte et tal i et felt.
+    \end{itemize}
+	
+	\section{Diskussion}
+	Skulle man forbedre denne sudoku er det oplagt at gøre følgende:
+	\begin{itemize}
+	    \item Sudokuen kunne printes endnu mere overskueligt end den på nuværende tidspunk bliver. Dette er dog på bekostning af kodelinjer og kodeoverskuelighed, men dette vil gøre sudokuen mere præsentabel og nemmere at finde rundt i visuelt.
+	    \item Fejl-håndteringen kunne være mere ekstensiv - det er muligt at ramme $exceptions$ ved et uheld, og dette må i sagens natur ikke kunne ske - i hvert fald kun i et lille omfang.
+	    \item Et udvalg af start-tilstande kunne tilbydes fra start og blive tilfældigt valgt - endda auto-genereret. Sidstnævnte er dog en lidt mere kompleks handling. Som en sidenote til første, kunne templates være direkte kompileret ind i exe-filen med kompilerns resource-flag.
+    \end{itemize}
+	
+	
+	\section{Konklusion}
+	Det kan ses i problemanalysen at alle krav fra problemformuleringen er mødt i designet, og spillet er programmelt konstrueret udfra samme design - derfor kan det konkluderes - desuden ved hjælp af unit-test'ene - at programmet opfylder de stillede krav.
+	
+	\section{Brugervejledning}
+	Programmet kan bygges ved hjælp af $make\ build$, køres ved hjælp af $make\ run$ samt køres og bygges sekventielt ved hjælp af $make\ dev$. Tests køres desuden med $make\ test$.
+	\\\\
+	Når programmet starter er der muligt at vælge enten at starte et spil og indlæse et eksisterende spil. Vælges den første mulighed vil man blive kastet lige ud i et spil, mens der i indlæsnings-tilfældet vil komme en prompt hvor man vil blive bedt om at skrive navnet på filen der skal indlæses - herefter vil spillet blive indlæst, og man vil nu være i samme situation som når man startede et nyt spil.
+	\\\\
+	Inde i selv spillet kan man køre tre forskeklige kommandoer: \emph{help}, \emph{save} og \emph{hint}. \emph{Help} printer samme hjælpemeddelelse som brugeren får i starten af spillet, som forklarer hvordan spillet spilles, og essentielt hvilke kommandoer der findes. \emph{Save} gemmer spillet - der promptes om et filnavn og dettes huskes, således at der kun skal trykkes enter alle efterfølgende gange der skal gemmes, i tilfælde af at filnavnet ønskes at være det samme. Til sidst er der \emph{hint} som åbner en promt hvor der skal specificeres hvilet felt (række, søjle) der ønskes hjælp til. 
+	\\\\
+	Til sidst er der den vigtigste funktion: indsætning af værdier i sudokuen. Dette gøres ved at bare at skrive tal i rækkefølgen: række nummer, søjle nummer og værdien der ønskes indsat. For eksempel 247 for række nummer 2, søjle nummer 4 og værdien der skal indsættes 7. Bemærk at der her bliver fjerne alle ikke-tal, og derfor er det også muligt at skrive 2,4=7 eller (2, 4)=7 eller 2 4 7.
+	
+	
+	\section{Programtekst}
+	\lstinputlisting[language=FSharp, caption={sudoku-interfacet, sudoku.fsi}, showstringspaces=false,numbers=left, breaklines=true]{src/lib/sudoku.fsi}
+	
+	\lstinputlisting[language=FSharp, caption={sudoku-modulet, sudoku.fs}, showstringspaces=false,numbers=left, breaklines=true]{src/lib/sudoku.fs}
+	
+    \lstinputlisting[language=FSharp, caption={tests, test.fsx}, showstringspaces=false,numbers=left, breaklines=true]{src/test.fsx}
+	
+    \lstinputlisting[language=FSharp, caption={brugerfladen, sudizzle.fsx}, showstringspaces=false,numbers=left, breaklines=true]{src/sudizzle.fsx}
+\end{document}
