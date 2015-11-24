@@ -25,8 +25,8 @@ let finished =
 test ("[save] t01", Sudoku.save "test.txt" izzle = ())
 test ("[save] t02", Sudoku.save "test2.txt" finished = ())
 
-test ("[load] t01", Sudoku.load "text.txt" = izzle)
-test ("[load] t02", Sudoku.load "text2.txt" = finished)
+test ("[load] t01", Sudoku.load "test.txt" = izzle)
+test ("[load] t02", Sudoku.load "test2.txt" = finished)
 
 test ("[isFinished] t01", Sudoku.isFinished izzle = false)
 test ("[isFinished] t02", Sudoku.isFinished finished = true)
