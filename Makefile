@@ -18,6 +18,7 @@ build-dll:
 
 build-exe:
 	${CC} -o $(OUTEXE) $(SRC)/sudizzle.fsx -r $(OUTDLL)
+	cp -r ./templates ./bin/templates
 
 build:
 	make build-dll
