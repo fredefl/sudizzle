@@ -9,6 +9,7 @@ CC=fsharpc
 # CFLAGS=-a --warnaserror+ --nologo
 SRC=./src
 LIB=$(SRC)/lib
+.DEFAULT_GOAL=build
 
 FILES=$(SRC)/sudizzle.fsx $(LIB)/sudoku.fs $(LIB)/sudoku.fsi
 
