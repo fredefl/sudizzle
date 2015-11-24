@@ -31,14 +31,14 @@ let print list =
     List.iteri (fun i x -> List.iter (fun x -> printf " %s %s" (case0 x (x.ToString ())) (case0 i "|")) (i :: x)
                            printfn "\n   +---+---+---+---+---+---+---+---+---+") (span :: list)
 
-let load file =
-    parse (System.IO.ReadAllLines file)
-
-let save file list = 
-    System.IO.WriteAllLines (file, stringify list)
-
 let parse input =
     List.map (fun x -> Seq.fold (fun y -> if y = '*' then 0 else System.Convert.ToInt32 y) "" x) input
 
 let stringify list =
     List.map (fun x -> List.fold (fun y -> if y = 0 then "*" else y.ToString ()) "" x) list
+
+let load file =
+    parse (System.IO.ReadAllLines file)
+
+let save file list = 
+    System.IO.WriteAllLines (file, stringify list)
